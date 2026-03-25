@@ -9,11 +9,11 @@ on:
 env:
   AZURE_FUNCTIONAPP_NAME: 'ai-rss-feed-func-app'  # Replace with your Azure Function App name
   AZURE_FUNCTIONAPP_PACKAGE_PATH: 'source'
-  NODE_VERSION: '18.x'
+  NODE_VERSION: '22.x'
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@v4
