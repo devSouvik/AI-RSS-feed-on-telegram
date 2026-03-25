@@ -6,6 +6,7 @@ const { handleTopic } = require('./handlers/topicHandler');
 const rateLimiter = require('./utils/rateLimiter');
 const { formatRateLimitMessage } = require('./utils/formatter');
 const logger = require('./utils/logger');
+const telegramApi = require('./utils/telegramApi');
 
 const WELCOME_MESSAGE =
   '👋 <b>Welcome to RSS Feed Bot!</b>\n\n' +
@@ -35,7 +36,7 @@ const HELP_MESSAGE =
  * Creates and configures the Telegram bot instance.
  * @returns {TelegramBot}
  */
-function createBot() {
+function createBot () {
   const bot = new TelegramBot(config.telegram.botToken, {
     polling: false, // Serverless: we will rely on Webhooks instead
   });
@@ -44,7 +45,7 @@ function createBot() {
   bot.onText(/\/start/, async (msg) => {
     const chatId = msg.chat.id;
     try {
-      await bot.sendMessage(chatId, WELCOME_MESSAGE, { parse_mode: 'HTML' });
+      await telegramApi.sendMessage(chatId, WELCOME_MESSAGE, { parse_mode: 'HTML' });
     } catch (err) {
       logger.error('[bot] Failed to send /start reply', { error: err.message });
     }
@@ -54,7 +55,7 @@ function createBot() {
   bot.onText(/\/help/, async (msg) => {
     const chatId = msg.chat.id;
     try {
-      await bot.sendMessage(chatId, HELP_MESSAGE, { parse_mode: 'HTML' });
+      await telegramApi.sendMessage(chatId, HELP_MESSAGE, { parse_mode: 'HTML' });
     } catch (err) {
       logger.error('[bot] Failed to send /help reply', { error: err.message });
     }
@@ -67,13 +68,13 @@ function createBot() {
     const topic = match[1].trim();
 
     if (!topic) {
-      await bot.sendMessage(chatId, '⚠️ Please provide a topic. Example: <code>/top artificial intelligence</code>', {
+      await telegramApi.sendMessage(chatId, '⚠️ Please provide a topic. Example: <code>/top artificial intelligence</code>', {
         parse_mode: 'HTML',
       });
       return;
     }
 
-    await _handleTopicWithRateLimit(bot, chatId, userId, topic);
+    await _handleTopicWithRateLimit(chatId, userId, topic);
   });
 
   // ── Plain text messages (treated as topic queries) ──────────────────────────
@@ -86,13 +87,13 @@ function createBot() {
     const topic = msg.text.trim();
 
     if (topic.length < 2) {
-      await bot.sendMessage(chatId, '⚠️ Please enter a topic with at least 2 characters.', {
+      await telegramApi.sendMessage(chatId, '⚠️ Please enter a topic with at least 2 characters.', {
         parse_mode: 'HTML',
       });
       return;
     }
 
-    await _handleTopicWithRateLimit(bot, chatId, userId, topic);
+    await _handleTopicWithRateLimit(chatId, userId, topic);
   });
 
   // ── Global polling error handler ─────────────────────────────────────────────
@@ -109,17 +110,16 @@ function createBot() {
 
 /**
  * Rate-limit check wrapper before calling the topic handler.
- * @param {TelegramBot} bot
  * @param {number} chatId
  * @param {number} userId
  * @param {string} topic
  */
-async function _handleTopicWithRateLimit(bot, chatId, userId, topic) {
+async function _handleTopicWithRateLimit (chatId, userId, topic) {
   if (!rateLimiter.isAllowed(userId)) {
     const retryAfter = rateLimiter.getRetryAfterSeconds(userId);
     logger.warn('[bot] Rate limit exceeded', { userId, chatId });
     try {
-      await bot.sendMessage(chatId, formatRateLimitMessage(retryAfter), {
+      await telegramApi.sendMessage(chatId, formatRateLimitMessage(retryAfter), {
         parse_mode: 'HTML',
       });
     } catch (err) {
@@ -128,7 +128,7 @@ async function _handleTopicWithRateLimit(bot, chatId, userId, topic) {
     return;
   }
 
-  await handleTopic(bot, chatId, userId, topic);
+  await handleTopic(chatId, userId, topic);
 }
 
 module.exports = { createBot };

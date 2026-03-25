@@ -5,19 +5,19 @@ const { rankTopResults } = require('../services/openaiService');
 const { formatTopResults, formatNoResults, formatErrorMessage } = require('../utils/formatter');
 const { handleError } = require('../utils/errorHandler');
 const logger = require('../utils/logger');
+const telegramApi = require('../utils/telegramApi');
 
 const TYPING_INTERVAL_MS = 4000;
 
 /**
  * Sends a Telegram "typing..." action periodically until cancelled.
- * @param {import('node-telegram-bot-api')} bot
  * @param {number} chatId
  * @returns {{ stop: Function }}
  */
-function startTypingIndicator(bot, chatId) {
-  bot.sendChatAction(chatId, 'typing').catch(() => {});
+function startTypingIndicator (chatId) {
+  telegramApi.sendChatAction(chatId, 'typing').catch(() => { });
   const interval = setInterval(() => {
-    bot.sendChatAction(chatId, 'typing').catch(() => {});
+    telegramApi.sendChatAction(chatId, 'typing').catch(() => { });
   }, TYPING_INTERVAL_MS);
 
   return { stop: () => clearInterval(interval) };
@@ -26,13 +26,12 @@ function startTypingIndicator(bot, chatId) {
 /**
  * Full pipeline: fetch RSS → AI ranking → Telegram reply.
  *
- * @param {import('node-telegram-bot-api')} bot
  * @param {number} chatId
  * @param {number} userId
  * @param {string} topic
  */
-async function handleTopic(bot, chatId, userId, topic) {
-  const typing = startTypingIndicator(bot, chatId);
+async function handleTopic (chatId, userId, topic) {
+  const typing = startTypingIndicator(chatId);
 
   try {
     logger.info('[topicHandler] Starting topic pipeline', { userId, chatId, topic });
@@ -42,7 +41,7 @@ async function handleTopic(bot, chatId, userId, topic) {
 
     if (articles.length === 0) {
       typing.stop();
-      await bot.sendMessage(chatId, formatNoResults(topic), { parse_mode: 'HTML' });
+      await telegramApi.sendMessage(chatId, formatNoResults(topic), { parse_mode: 'HTML' });
       return;
     }
 
@@ -51,7 +50,7 @@ async function handleTopic(bot, chatId, userId, topic) {
 
     if (topResults.length === 0) {
       typing.stop();
-      await bot.sendMessage(chatId, formatNoResults(topic), { parse_mode: 'HTML' });
+      await telegramApi.sendMessage(chatId, formatNoResults(topic), { parse_mode: 'HTML' });
       return;
     }
 
@@ -60,7 +59,7 @@ async function handleTopic(bot, chatId, userId, topic) {
 
     typing.stop();
     for (const msg of messages) {
-      await bot.sendMessage(chatId, msg, {
+      await telegramApi.sendMessage(chatId, msg, {
         parse_mode: 'HTML',
         disable_web_page_preview: true,
       });
@@ -79,7 +78,7 @@ async function handleTopic(bot, chatId, userId, topic) {
     const { userMessage } = handleError(err, 'topicHandler');
 
     try {
-      await bot.sendMessage(chatId, formatErrorMessage(userMessage), { parse_mode: 'HTML' });
+      await telegramApi.sendMessage(chatId, formatErrorMessage(userMessage), { parse_mode: 'HTML' });
     } catch (sendErr) {
       logger.error('[topicHandler] Failed to send error message to user', {
         sendError: sendErr.message,
