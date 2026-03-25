@@ -140,24 +140,15 @@ Users who exceed the limit receive a friendly cooldown message.
 ### Prerequisites
 1. An Azure subscription
 2. Azure Functions resource created (Node.js 22.x runtime)
-3. Azure CLI installed locally
 
-### Step 1: Create Azure Service Principal
+### Step 1: Download Publish Profile
 
-```bash
-# Login to Azure
-az login
+1. Go to **Azure Portal** → Your Function App
+2. Click **Get publish profile** (or **Download publish profile**) in the toolbar
+3. A `.PublishSettings` XML file will be downloaded
+4. Open it with a text editor and copy the entire contents
 
-# Create service principal with Contributor role
-az ad sp create-for-rbac --name "github-actions-rss-bot" \
-  --role contributor \
-  --scopes /subscriptions/{subscription-id}/resourceGroups/{resource-group} \
-  --sdk-auth
-```
-
-**Important:** Copy the entire JSON output. You'll need it in the next step.
-
-### Step 2: Configure GitHub Secrets
+### Step 2: Configure GitHub Secret
 
 Go to your GitHub repository → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**
 
@@ -165,7 +156,7 @@ Add the following secret:
 
 | Secret Name | Value |
 |---|---|
-| `AZURE_CREDENTIALS` | The entire JSON output from Step 1 |
+| `AZURE_FUNCTIONAPP_PUBLISH_PROFILE` | Paste the entire contents of the `.PublishSettings` file |
 
 ### Step 3: Configure Application Settings in Azure
 
@@ -182,8 +173,7 @@ In Azure Portal, go to your Function App → **Configuration** → **Application
 
 ### Step 4: Update Workflow
 
-Edit `.github/workflows/azure-functions-deploy.yml` and replace:
-- `AZURE_FUNCTIONAPP_NAME` with your actual Function App name
+Edit `.github/workflows/azure-functions-deploy.yml` and replace `AZURE_FUNCTIONAPP_NAME` with your actual Function App name.
 
 ### Step 5: Deploy
 
