@@ -1,0 +1,84 @@
+﻿2026-03-25 11:54:55 [[32minfo[39m]: [rssFetcher] Fetching 7 feeds for topic: "Iran Iraqi war"
+2026-03-25 11:54:56 [[33mwarn[39m]: [rssFetcher] Failed to fetch feed "TechCrunch" {"url":"https://techcrunch.com/wp-json/tc/v1/magazine?tag=Iran%20Iraqi%20war&per_page=20&_envelope=true","error":"Non-whitespace before first tag.\nLine: 0\nColumn: 1\nChar: {"}
+2026-03-25 11:54:56 [[33mwarn[39m]: [rssFetcher] Failed to fetch feed "Dev.to" {"url":"https://dev.to/feed/tag/iraniraqiwar","error":"Request failed with status code 404"}
+2026-03-25 11:54:56 [[33mwarn[39m]: [rssFetcher] Failed to fetch feed "Wired" {"url":"https://www.wired.com/feed/tag/Iran%20Iraqi%20war/latest/rss","error":"Request failed with status code 404"}
+2026-03-25 11:54:59 [[32minfo[39m]: [rssFetcher] Fetched 40 candidate articles for topic: "Iran Iraqi war"
+Fetched 40 articles
+2026-03-25 11:54:59 [[32minfo[39m]: [openaiService] Initialising Azure OpenAI client with baseURL: https://azureopenaipoc140.openai.azure.com/openai/deployments/gpt-5-nano
+2026-03-25 11:54:59 [[32minfo[39m]: [openaiService] Sending articles to Azure OpenAI for ranking {"topic":"Iran Iraqi war","articleCount":30,"deployment":"gpt-5-nano"}
+node : [openaiService] Full response object: {
+At line:1 char:1
++ node test_openai.js > test_out.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([openaiService] Full r 
+   esponse object: {:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  "choices": [
+    {
+      "content_filter_results": {},
+      "finish_reason": "length",
+      "index": 0,
+      "logprobs": null,
+      "message": {
+        "annotations": [],
+        "content": "",
+        "refusal": null,
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1774419900,
+  "id": "chatcmpl-DNBxkovehljRIWZeUGWFImJAk5wLX",
+  "model": "gpt-5-nano-2025-08-07",
+  "object": "chat.completion",
+  "prompt_filter_results": [
+    {
+      "prompt_index": 0,
+      "content_filter_results": {
+        "hate": {
+          "filtered": false,
+          "severity": "safe"
+        },
+        "jailbreak": {
+          "detected": false,
+          "filtered": false
+        },
+        "self_harm": {
+          "filtered": false,
+          "severity": "safe"
+        },
+        "sexual": {
+          "filtered": false,
+          "severity": "safe"
+        },
+        "violence": {
+          "filtered": false,
+          "severity": "safe"
+        }
+      }
+    }
+  ],
+  "system_fingerprint": null,
+  "usage": {
+    "completion_tokens": 2000,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 2000,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens": 2601,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 0
+    },
+    "total_tokens": 4601
+  }
+}
+Test failed: Error: Azure OpenAI returned an empty response
+    at rankTopResults 
+(C:\my_works\RSS_feed\src\services\openaiService.js:142:11)
+    at process.processTicksAndRejections 
+(node:internal/process/task_queues:95:5)
+    at async test (C:\my_works\RSS_feed\test_openai.js:9:5)
