@@ -1,7 +1,8 @@
 'use strict';
 
 const axios = require('axios');
-const axiosRetry = require('axios-retry');
+const axiosRetryLib = require('axios-retry');
+const axiosRetry = axiosRetryLib.default || axiosRetryLib;
 const config = require('../config');
 const logger = require('./logger');
 
@@ -11,16 +12,21 @@ const telegramAxios = axios.create({
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
+    'Connection': 'close', // Prevent keep-alive issues
   },
+  // Disable HTTP keep-alive to prevent ECONNRESET
+  httpAgent: null,
+  httpsAgent: null,
+  maxRedirects: 5,
 });
 
 // Retry failed requests (network errors, 429 rate limits, 5xx errors)
 axiosRetry(telegramAxios, {
   retries: 3,
-  retryDelay: axiosRetry.exponentialDelay,
+  retryDelay: axiosRetryLib.exponentialDelay,
   retryCondition: (error) => {
     return (
-      axiosRetry.isNetworkOrIdempotentRequestError(error) ||
+      axiosRetryLib.isNetworkOrIdempotentRequestError(error) ||
             error.response?.status === 429 ||
             (error.response?.status >= 500 && error.response?.status < 600)
     );
