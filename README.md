@@ -135,6 +135,69 @@ Users who exceed the limit receive a friendly cooldown message.
 
 ---
 
+## Deployment to Azure Functions
+
+### Prerequisites
+1. An Azure subscription
+2. Azure Functions resource created (Node.js 22.x runtime)
+3. Azure CLI installed locally
+
+### Step 1: Create Azure Service Principal
+
+```bash
+# Login to Azure
+az login
+
+# Create service principal with Contributor role
+az ad sp create-for-rbac --name "github-actions-rss-bot" \
+  --role contributor \
+  --scopes /subscriptions/{subscription-id}/resourceGroups/{resource-group} \
+  --sdk-auth
+```
+
+**Important:** Copy the entire JSON output. You'll need it in the next step.
+
+### Step 2: Configure GitHub Secrets
+
+Go to your GitHub repository → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**
+
+Add the following secret:
+
+| Secret Name | Value |
+|---|---|
+| `AZURE_CREDENTIALS` | The entire JSON output from Step 1 |
+
+### Step 3: Configure Application Settings in Azure
+
+In Azure Portal, go to your Function App → **Configuration** → **Application settings** and add:
+
+- `TELEGRAM_BOT_TOKEN`
+- `AZURE_OPENAI_ENDPOINT`
+- `AZURE_OPENAI_API_KEY`
+- `AZURE_OPENAI_DEPLOYMENT_NAME`
+- `AZURE_OPENAI_API_VERSION`
+- `NODE_ENV=production`
+- `LOG_LEVEL=info`
+- `RATE_LIMIT_PER_USER_PER_MIN=5`
+
+### Step 4: Update Workflow
+
+Edit `.github/workflows/azure-functions-deploy.yml` and replace:
+- `AZURE_FUNCTIONAPP_NAME` with your actual Function App name
+
+### Step 5: Deploy
+
+Push to `main` branch or manually trigger the workflow:
+```bash
+git add .
+git commit -m "Configure deployment"
+git push origin main
+```
+
+Or use the GitHub Actions UI: **Actions** tab → **Deploy to Azure Functions** → **Run workflow**
+
+---
+
 ## License
 
 MIT
