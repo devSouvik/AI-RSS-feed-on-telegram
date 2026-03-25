@@ -8,27 +8,27 @@ const { formatRateLimitMessage } = require('./utils/formatter');
 const logger = require('./utils/logger');
 
 const WELCOME_MESSAGE =
-  `👋 <b>Welcome to RSS Feed Bot!</b>\n\n` +
-  `I fetch the <b>Top 10 hottest news</b> on any topic from across the internet, powered by AI.\n\n` +
-  `<b>How to use:</b>\n` +
-  `• Send any topic name directly as a message\n` +
-  `• Or use the <code>/top &lt;topic&gt;</code> command\n\n` +
-  `<b>Examples:</b>\n` +
-  `<code>/top artificial intelligence</code>\n` +
-  `<code>/top climate change</code>\n` +
-  `<code>climate change</code>\n\n` +
-  `Type /help for more info.`;
+  '👋 <b>Welcome to RSS Feed Bot!</b>\n\n' +
+  'I fetch the <b>Top 10 hottest news</b> on any topic from across the internet, powered by AI.\n\n' +
+  '<b>How to use:</b>\n' +
+  '• Send any topic name directly as a message\n' +
+  '• Or use the <code>/top &lt;topic&gt;</code> command\n\n' +
+  '<b>Examples:</b>\n' +
+  '<code>/top artificial intelligence</code>\n' +
+  '<code>/top climate change</code>\n' +
+  '<code>climate change</code>\n\n' +
+  'Type /help for more info.';
 
 const HELP_MESSAGE =
-  `ℹ️ <b>RSS Feed Bot — Help</b>\n\n` +
-  `<b>Commands:</b>\n` +
-  `• <code>/start</code> — Welcome message\n` +
-  `• <code>/help</code> — Show this help\n` +
-  `• <code>/top &lt;topic&gt;</code> — Get top 10 news for a topic\n\n` +
-  `<b>Tips:</b>\n` +
-  `• Be specific for better results (e.g. "GPT-4 benchmark" vs "AI")\n` +
-  `• Works for any topic: tech, finance, sports, science, politics...\n` +
-  `• Results are ranked by relevance and recency by AI\n\n` +
+  'ℹ️ <b>RSS Feed Bot — Help</b>\n\n' +
+  '<b>Commands:</b>\n' +
+  '• <code>/start</code> — Welcome message\n' +
+  '• <code>/help</code> — Show this help\n' +
+  '• <code>/top &lt;topic&gt;</code> — Get top 10 news for a topic\n\n' +
+  '<b>Tips:</b>\n' +
+  '• Be specific for better results (e.g. "GPT-4 benchmark" vs "AI")\n' +
+  '• Works for any topic: tech, finance, sports, science, politics...\n' +
+  '• Results are ranked by relevance and recency by AI\n\n' +
   `<b>Rate limit:</b> ${config.app.rateLimitPerUserPerMin} requests per minute per user.`;
 
 /**

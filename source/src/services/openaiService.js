@@ -28,9 +28,9 @@ function getClient () {
 
     _client = new AzureOpenAI({
       baseURL: baseUrl,
-      apiVersion: "2024-12-01-preview",
+      apiVersion: '2024-12-01-preview',
       apiKey: config.azure.apiKey,
-      defaultQuery: { 'api-version': "2024-12-01-preview" },
+      defaultQuery: { 'api-version': '2024-12-01-preview' },
     });
   }
   return _client;

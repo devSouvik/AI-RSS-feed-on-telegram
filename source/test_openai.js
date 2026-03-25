@@ -4,7 +4,7 @@ const { rankTopResults } = require('./src/services/openaiService');
 
 async function test() {
   try {
-    const articles = await fetchRssFeeds("Iran Iraqi war");
+    const articles = await fetchRssFeeds('Iran Iraqi war');
     console.log(`Fetched ${articles.length} articles`);
     await rankTopResults('Iran Iraqi war', articles);
   } catch (err) {

@@ -34,5 +34,5 @@ app.http('telegramWebhook', {
       // Even on error, returning 200 stops Telegram from endlessly retrying a poison message
       return { status: 200, body: 'Error but acknowledged' };
     }
-  }
+  },
 });

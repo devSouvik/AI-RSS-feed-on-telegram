@@ -26,16 +26,16 @@ function formatTopResults(topic, results) {
 
   const header =
     `🔍 <b>Top ${results.length} results for:</b> <i>${escapeHtml(topic)}</i>\n` +
-    `━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+    '━━━━━━━━━━━━━━━━━━━━━━\n\n';
 
   const footer =
-    `\n\n━━━━━━━━━━━━━━━━━━━━━━\n` +
-    `💡 <i>Send another topic to search again</i>`;
+    '\n\n━━━━━━━━━━━━━━━━━━━━━━\n' +
+    '💡 <i>Send another topic to search again</i>';
 
   for (let i = 0; i < results.length; i += CHUNK_SIZE) {
     const chunk = results.slice(i, i + CHUNK_SIZE);
     
-    let chunkItems = chunk.map((item, chunkIdx) => {
+    const chunkItems = chunk.map((item, chunkIdx) => {
       const globalIndex = i + chunkIdx;
       const title = escapeHtml(item.title || 'Untitled');
       const summary = escapeHtml(item.summary || '');
@@ -74,7 +74,7 @@ function formatTopResults(topic, results) {
  */
 function formatRateLimitMessage(retryAfterSeconds) {
   return (
-    `⏳ <b>Slow down!</b>\n\n` +
+    '⏳ <b>Slow down!</b>\n\n' +
     `You've sent too many requests. Please wait <b>${retryAfterSeconds} seconds</b> before trying again.`
   );
 }
@@ -96,7 +96,7 @@ function formatErrorMessage(message) {
 function formatNoResults(topic) {
   return (
     `😕 <b>No results found for:</b> <i>${escapeHtml(topic)}</i>\n\n` +
-    `Try a different topic or a more specific keyword.`
+    'Try a different topic or a more specific keyword.'
   );
 }
 
